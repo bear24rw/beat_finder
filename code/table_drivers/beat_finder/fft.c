@@ -39,8 +39,51 @@ int init_fft(void)
     return 0;
 }
 
+void list_cards(void)
+{
+    snd_ctl_card_info_t *p_info = NULL;
+    snd_ctl_card_info_alloca(&p_info);
+
+    snd_pcm_info_t *p_pcminfo = NULL;
+    snd_pcm_info_alloca(&p_pcminfo);
+
+    printf("Availible alsa capture devices:\n");
+
+    int i_card = -1;
+    while (!snd_card_next(&i_card) && i_card >= 0)
+    {
+        char devname[10];
+        snprintf( devname, 10, "hw:%d", i_card );
+
+        snd_ctl_t *p_ctl = NULL;
+        if ( snd_ctl_open( &p_ctl, devname, 0 ) < 0) continue;
+
+        snd_ctl_card_info( p_ctl, p_info);
+        printf("\t%s (%s)\n", snd_ctl_card_info_get_id(p_info), snd_ctl_card_info_get_name(p_info));
+
+        int i_dev = -1;
+        while (!snd_ctl_pcm_next_device(p_ctl, &i_dev) && i_dev >= 0)
+        {
+            snd_pcm_info_set_device(p_pcminfo, i_dev);
+            snd_pcm_info_set_subdevice(p_pcminfo, 0);
+            snd_pcm_info_set_stream(p_pcminfo, SND_PCM_STREAM_CAPTURE);
+
+            if (snd_ctl_pcm_info(p_ctl, p_pcminfo) < 0) continue;
+
+            printf("\t\thw:%d,%d : %s (%s)\n", i_card, i_dev, 
+                    snd_pcm_info_get_id(p_pcminfo), 
+                    snd_pcm_info_get_name(p_pcminfo));
+        }
+
+        snd_ctl_close(p_ctl);
+    }
+
+}
+
 int init_alsa(void)
 {
+    list_cards();
+
     // open PCM device for recording
     rc = snd_pcm_open(&handle, "default", SND_PCM_STREAM_CAPTURE, 0);
 
@@ -49,6 +92,8 @@ int init_alsa(void)
         printf("Unable to open pcm device: %s\n", snd_strerror(rc));
         return 1;
     }
+    else
+        printf("Using %s\n", snd_pcm_name(handle)); 
 
     // allocate a hardware parameter object
     snd_pcm_hw_params_alloca(&params);
