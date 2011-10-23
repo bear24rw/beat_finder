@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <math.h>
+#include <pthread.h>
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -33,6 +34,7 @@ SDL_Event event;
 SDL_Surface *surface;    
 
 FTGLfont *font;
+char text[100];
 
 unsigned char done = FALSE;
 
@@ -317,8 +319,14 @@ int draw_all(void)
 
     glTranslatef(xpos, ypos, zpos);
 
-    ftglSetFontFaceSize(font, 72, 72);
-    ftglRenderFont(font, "Hello world!", FTGL_RENDER_ALL);
+    ftglSetFontFaceSize(font, 24, 24);
+
+    pthread_mutex_lock(&sample_mutex);
+    sprintf(text, "Unprocessed samples: %d", new_sample);
+    if (new_sample > 0)
+        ftglRenderFont(font, text, FTGL_RENDER_ALL);
+    pthread_mutex_unlock(&sample_mutex);
+
 
     // draw each bins mag, hist, hist_avg, hist_var
     for (i=0; i< FFT_NUM_BINS; i++)

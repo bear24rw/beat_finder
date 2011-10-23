@@ -296,7 +296,7 @@ int main( int argc, char **argv )
 
             assign_lights();
 
-            assign_cells();
+            //assign_cells();
 
             if ( use_gui )
             {
