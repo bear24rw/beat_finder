@@ -373,7 +373,7 @@ int draw_all(void)
     glColor3ub(100,100,100);
     for (i=0; i < SAMPLE_SIZE; i++)
     {
-        glVertex2f(i*SCREEN_WIDTH/SAMPLE_SIZE, 25 + (fft_input[i] - fft_input_avg) / 100 );
+        glVertex2f(i*SCREEN_WIDTH/SAMPLE_SIZE, (SCREEN_HEIGHT / 2) + (fft_input[i] - fft_input_avg) / 100 );
     }
     glEnd();
 
