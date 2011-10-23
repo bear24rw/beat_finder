@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <math.h>
+#include <pthread.h>
 
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <SDL.h>
+#include <FTGL/ftgl.h>
 
 #include "main.h"
 #include "fft.h"
@@ -30,6 +33,9 @@ int mouse_y = 0;
 SDL_Event event;
 SDL_Surface *surface;    
 
+FTGLfont *font;
+char text[100];
+
 unsigned char done = FALSE;
 
 void init_gl(void)
@@ -45,6 +51,12 @@ void init_gl(void)
     glEnable(GL_LINE_SMOOTH);
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);    
     glEnable(GL_BLEND);                            
+
+    font = ftglCreatePixmapFont("/usr/share/fonts/corefonts/arial.ttf");
+    if (!font)
+    {
+        printf("Could not load font!\n");
+    }
 }
 
 int init_sdl(void)
@@ -307,6 +319,15 @@ int draw_all(void)
 
     glTranslatef(xpos, ypos, zpos);
 
+    ftglSetFontFaceSize(font, 24, 24);
+
+    pthread_mutex_lock(&sample_mutex);
+    sprintf(text, "Unprocessed samples: %d", new_sample);
+    if (new_sample > 0)
+        ftglRenderFont(font, text, FTGL_RENDER_ALL);
+    pthread_mutex_unlock(&sample_mutex);
+
+
     // draw each bins mag, hist, hist_avg, hist_var
     for (i=0; i< FFT_NUM_BINS; i++)
     {
@@ -355,7 +376,7 @@ int draw_all(void)
     // draw lines from the light to corresponding bin
     draw_lines_to_lights();
 
-    draw_table(0,0);
+    //draw_table(0,0);
 
     // draw the real vs img plot
     //draw_real_img_plot(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
@@ -364,9 +385,17 @@ int draw_all(void)
     glBegin(GL_LINE_STRIP);
     glColor3ub(100,100,100);
     for (i=0; i < SAMPLE_SIZE; i++)
-        glVertex2f(i*SCREEN_WIDTH/SAMPLE_SIZE, 25 + fft_input[i] / 1000);
+    {
+        glVertex2f(i*SCREEN_WIDTH/SAMPLE_SIZE, 25 + fft_input[i] / 100 );
+    }
     glEnd();
-
+/*
+    glBegin(GL_LINE_STRIP);
+    glColor3ub(100,100,100);
+    for (i=0; i < 900; i++)
+        glVertex2f(i*SCREEN_WIDTH/900, 200 + (float)tmp_buffer[i]/100);
+    glEnd();
+*/
 
     // draw test gradient
     /* 

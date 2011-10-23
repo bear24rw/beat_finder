@@ -10,7 +10,7 @@
 #define SAMPLE_RATE     44100
 #define FFT_SIZE        (SAMPLE_SIZE / 2)
 #define MAX_FREQ        8000
-#define HIST_SIZE       13
+#define HIST_SIZE       13*2
 #define FREQ_PER_BIN    (SAMPLE_RATE / SAMPLE_SIZE)
 #define FFT_NUM_BINS    (MAX_FREQ/FREQ_PER_BIN)
 #define FFT_BIN_WIDTH   10              // pixel width of bin
@@ -59,6 +59,7 @@ extern double fft_global_hist_mag_max;  // max value of global history
 extern double fft_global_hist_std_avg;  // avg of all the std deviations
 extern double fft_global_hist_std_max;  // max of all the std deviations
 
+extern char new_data; // flag to signal that we have new data
 
 struct light
 {
