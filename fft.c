@@ -15,6 +15,8 @@ double *fft_input;
 fftw_complex *fft_out;
 fftw_plan fft_plan;
 
+double fft_input_avg = 0;
+
 snd_pcm_t *handle;
 snd_pcm_hw_params_t *params;
 snd_pcm_uframes_t frames = 1024;
@@ -28,8 +30,7 @@ unsigned char *buffer; // 2 bytes / sample, 2 channels
 uint16_t tmp_buffer[940];
 
 // read in PCM 44100:16:1
-static int16_t buf[SAMPLE_SIZE];
-
+//static int16_t buf[SAMPLE_SIZE];
 
 pthread_mutex_t sample_mutex = PTHREAD_MUTEX_INITIALIZER;
 char new_sample = 0;
@@ -204,8 +205,6 @@ void get_alsa(void)
     }
     else if (rc == (int)frames)
     {
-        //printf("GREAT! Found %d frames\n", rc);
-        
         // shift old buffer over to make room for new stuff
         for (i = 0; i < SAMPLE_SIZE - rc; i++)
             fft_input[i] = fft_input[i+rc];
@@ -223,7 +222,6 @@ void get_alsa(void)
             pthread_mutex_unlock(&sample_mutex);
         }
     }
-
 }
 
 void *get_samples(void)
@@ -231,7 +229,14 @@ void *get_samples(void)
     while(1)
     {
         get_alsa();
-/*
+
+        // find average of the input signal
+        fft_input_avg = 0;
+        for (int i = 0; i < SAMPLE_SIZE; i++)
+            fft_input_avg += fft_input[i];
+        fft_input_avg /= SAMPLE_SIZE;
+
+        /*
 
         for (i = 0; i < SAMPLE_SIZE; i++) buf[i] = 0;
 

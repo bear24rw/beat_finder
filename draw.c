@@ -368,11 +368,12 @@ int draw_all(void)
     //draw_real_img_plot(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 
     // draw raw signal
+
     glBegin(GL_LINE_STRIP);
     glColor3ub(100,100,100);
     for (i=0; i < SAMPLE_SIZE; i++)
     {
-        glVertex2f(i*SCREEN_WIDTH/SAMPLE_SIZE, 25 + fft_input[i] / 100 );
+        glVertex2f(i*SCREEN_WIDTH/SAMPLE_SIZE, 25 + (fft_input[i] - fft_input_avg) / 100 );
     }
     glEnd();
 

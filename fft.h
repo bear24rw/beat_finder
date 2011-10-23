@@ -9,7 +9,8 @@ extern double *fft_input;
 extern fftw_complex *fft_out;
 extern fftw_plan fft_plan;
 
-extern uint16_t tmp_buffer[940];
+extern double fft_input_avg;
+
 extern pthread_mutex_t sample_mutex;
 extern char new_sample;
 
