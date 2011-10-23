@@ -219,8 +219,6 @@ void draw_mag_hist_var(int i, float off_x, float off_y)
 // draw magnitude history
 void draw_mag_hist(int i, float off_x, float off_y)
 {
-    glBegin(GL_QUADS);
-
     for (k = 0; k < HIST_SIZE; k++)
     {
         float r = 255*fft_bin[i].hist[k]/fft_global_hist_mag_max;
@@ -232,13 +230,9 @@ void draw_mag_hist(int i, float off_x, float off_y)
 
         glColor3ub(r, g, b );
 
-        glVertex2f(off_x + (i+1)*FFT_BIN_WIDTH , off_y + k*FFT_BIN_WIDTH );        // TL
-        glVertex2f(off_x + (i+1)*FFT_BIN_WIDTH , off_y + (k+1)*FFT_BIN_WIDTH );    // TR
-        glVertex2f(off_x + i*FFT_BIN_WIDTH     , off_y + (k+1)*FFT_BIN_WIDTH );    // BR
-        glVertex2f(off_x + i*FFT_BIN_WIDTH     , off_y + k*FFT_BIN_WIDTH );        // BL 
+        glRectf(off_x + (i+0)*FFT_BIN_WIDTH, off_y + (k+0)*FFT_BIN_WIDTH,
+                off_x + (i+1)*FFT_BIN_WIDTH, off_y + (k+1)*FFT_BIN_WIDTH);
     }
-
-    glEnd();
 
     // draw bar at bottom of history
     glBegin(GL_LINES);
@@ -299,13 +293,9 @@ void draw_lights(void)
         // draw light if its on
         if (lights[i].state)
         {
-            glBegin(GL_QUADS);
             glColor3ub(25, 0, 255);
-            glVertex2f(x + s + i*LIGHT_SIZE + 5        , y + 5);               // BL
-            glVertex2f(x + s + i*LIGHT_SIZE + 5        , y + LIGHT_SIZE - 5);  // TL
-            glVertex2f(x + s + (i+1)*LIGHT_SIZE - 5    , y + LIGHT_SIZE - 5);  // TR
-            glVertex2f(x + s + (i+1)*LIGHT_SIZE - 5    , y + 5);              // BR
-            glEnd();
+            glRectf(x + s + (i+0)*LIGHT_SIZE + 5, y + LIGHT_SIZE - 5,
+                    x + s + (i+1)*LIGHT_SIZE - 5, y + 5);
         }
     }
 }
