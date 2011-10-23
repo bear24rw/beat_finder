@@ -356,7 +356,7 @@ int draw_all(void)
     // draw lines from the light to corresponding bin
     draw_lines_to_lights();
 
-    draw_table(0,0);
+    //draw_table(0,0);
 
     // draw the real vs img plot
     //draw_real_img_plot(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
@@ -365,15 +365,17 @@ int draw_all(void)
     glBegin(GL_LINE_STRIP);
     glColor3ub(100,100,100);
     for (i=0; i < SAMPLE_SIZE; i++)
-        glVertex2f(i*SCREEN_WIDTH/SAMPLE_SIZE, 25 + fft_input[i] / 1000);
+    {
+        glVertex2f(i*SCREEN_WIDTH/SAMPLE_SIZE, 25 + fft_input[i] / 100 );
+    }
     glEnd();
-
+/*
     glBegin(GL_LINE_STRIP);
     glColor3ub(100,100,100);
     for (i=0; i < 900; i++)
         glVertex2f(i*SCREEN_WIDTH/900, 200 + (float)tmp_buffer[i]/100);
     glEnd();
-
+*/
 
     // draw test gradient
     /* 

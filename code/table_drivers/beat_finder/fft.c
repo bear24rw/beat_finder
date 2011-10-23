@@ -205,6 +205,10 @@ void get_alsa(void)
     else if (rc == (int)frames)
     {
         //printf("GREAT! Found %d frames\n", rc);
+        
+        // shift old buffer over to make room for new stuff
+        for (i = 0; i < SAMPLE_SIZE - rc; i++)
+            fft_input[i] = fft_input[i+rc];
 
         int frame = 0;
         for (frame=0; frame<rc; frame++)
@@ -212,14 +216,11 @@ void get_alsa(void)
             int left = (buffer[frame*4+0] << 8) | buffer[frame*4+1];
             int right = (buffer[frame*4+2] << 8) | buffer[frame*4+3];
 
-            tmp_buffer[frame] = (left + right) / 2;
-            //tmp_buffer[frame] = (buffer[frame*4+0] << 8) | (buffer[frame*4+1]);
-            //tmp_buffer[frame] = (buffer[frame*4+2] << 8) | (buffer[frame*4+3]);
-            //tmp_buffer[frame] /= 2.0;
+            fft_input[frame+(SAMPLE_SIZE-rc)] = (double)(left + right) / 1;
 
-            //printf("%x %x = %u | %x\n", buffer[frame*4+0], buffer[frame*4+1], tmp_buffer[frame], tmp_buffer[frame]);
-            //printf("%x %x %d | %x %x %d\n", buffer[frame*4+0], buffer[frame*4+1], left, buffer[frame*4+2], buffer[frame*4+3], right);
-            
+            pthread_mutex_lock(&sample_mutex);
+            new_sample++;
+            pthread_mutex_unlock(&sample_mutex);
         }
     }
 
@@ -229,7 +230,9 @@ void *get_samples(void)
 {
     while(1)
     {
-        //get_alsa();
+        get_alsa();
+/*
+
         for (i = 0; i < SAMPLE_SIZE; i++) buf[i] = 0;
 
         int data = fread(buf, sizeof(int16_t), SAMPLE_SIZE, fifo_file);
@@ -247,7 +250,7 @@ void *get_samples(void)
             new_sample++;
             pthread_mutex_unlock(&sample_mutex);
         }
-
+*/
     }
 }
 
@@ -272,7 +275,7 @@ void do_fft(void)
 // TODO: memcpy
 void copy_bins_to_old(void)
 {
-    for (i = 0; i < FFT_NUM_BINS; i++)
+    for (i = 1; i < FFT_NUM_BINS; i++)
     {
         fft_bin[i].last_mag = fft_bin[i].mag;
     }
@@ -288,7 +291,7 @@ void compute_magnitude(void)
 
     static double clip_mag_raw = 0;
 
-    for (i = 0; i < FFT_NUM_BINS; i++)
+    for (i = 1; i < FFT_NUM_BINS; i++)
     {
         // compute magnitude magnitude
         fft_bin[i].mag = sqrt( fft_out[i][0]*fft_out[i][0] + fft_out[i][1]*fft_out[i][1] );
@@ -311,7 +314,7 @@ void compute_magnitude(void)
         clip_mag = CLIP_STATIC_MAG;
 
     // loop through all bins and see if they need to be clipped
-    for (i = 0; i < FFT_NUM_BINS; i++)
+    for (i = 1; i < FFT_NUM_BINS; i++)
     {
         if (USE_CLIP && fft_bin[i].mag > clip_mag)
         {
@@ -332,7 +335,7 @@ void compute_magnitude(void)
 
     // calculate the average magnitude
     fft_global_mag_avg = 0;
-    for (i = 0; i < FFT_NUM_BINS; i++)
+    for (i = 1; i < FFT_NUM_BINS; i++)
     {
         fft_global_mag_avg += fft_bin[i].mag;
     }
@@ -352,7 +355,7 @@ void compute_magnitude(void)
 //     would only work if noting use delta for everything
 void compute_delta_from_last(void)
 {
-    for (i = 0; i < FFT_NUM_BINS; i++)
+    for (i = 1; i < FFT_NUM_BINS; i++)
     {
         // calculate difference between these bins and the last
         // only takes the ones that increased from last time
@@ -366,7 +369,7 @@ void compute_delta_from_last(void)
 // push the current bins into history
 void add_bins_to_history (void)
 {
-    for (i = 0; i < FFT_NUM_BINS; i++)
+    for (i = 1; i < FFT_NUM_BINS; i++)
     {
         // shift history buffer down
         for (k = 1; k<HIST_SIZE; k++)
@@ -387,7 +390,7 @@ void compute_bin_hist(void)
     fft_global_hist_mag_max = 0;
     fft_global_hist_mag_avg = 0;
 
-    for (i = 0; i < FFT_NUM_BINS; i++)
+    for (i = 1; i < FFT_NUM_BINS; i++)
     {
         // reset bin hist avg
         fft_bin[i].hist_avg = 0;
@@ -420,7 +423,7 @@ void compute_std_dev(void)
     fft_global_hist_std_max = 0;
     fft_global_hist_std_avg = 0;
 
-    for (i = 0; i < FFT_NUM_BINS; i++)
+    for (i = 1; i < FFT_NUM_BINS; i++)
     {
         // compute the std deviation
         // sqrt(1/n * sum(x - a)^2)
