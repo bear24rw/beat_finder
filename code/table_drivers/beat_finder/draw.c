@@ -6,6 +6,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <SDL.h>
+#include <FTGL/ftgl.h>
 
 #include "main.h"
 #include "fft.h"
@@ -31,6 +32,8 @@ int mouse_y = 0;
 SDL_Event event;
 SDL_Surface *surface;    
 
+FTGLfont *font;
+
 unsigned char done = FALSE;
 
 void init_gl(void)
@@ -46,6 +49,12 @@ void init_gl(void)
     glEnable(GL_LINE_SMOOTH);
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);    
     glEnable(GL_BLEND);                            
+
+    font = ftglCreatePixmapFont("/usr/share/fonts/corefonts/arial.ttf");
+    if (!font)
+    {
+        printf("Could not load font!\n");
+    }
 }
 
 int init_sdl(void)
@@ -307,6 +316,9 @@ int draw_all(void)
     glLoadIdentity();
 
     glTranslatef(xpos, ypos, zpos);
+
+    ftglSetFontFaceSize(font, 72, 72);
+    ftglRenderFont(font, "Hello world!", FTGL_RENDER_ALL);
 
     // draw each bins mag, hist, hist_avg, hist_var
     for (i=0; i< FFT_NUM_BINS; i++)
