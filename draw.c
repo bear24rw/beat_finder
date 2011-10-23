@@ -48,7 +48,7 @@ void init_gl(void)
 
     glDisable(GL_DEPTH_TEST);
 
-    font = ftglCreatePixmapFont("/usr/share/fonts/corefonts/arial.ttf");
+    font = ftglCreatePixmapFont("/usr/share/fonts/ttf-bitstream-vera/VeraMono.ttf");
     if (!font)
     {
         printf("Could not load font!\n");
@@ -224,7 +224,7 @@ void draw_mag_hist(int i, float off_x, float off_y)
         // if this was a beat, color it white
         if (fft_bin[i].trigger_hist[k]) {r = 255; g = 255; b = 255;}
 
-        glColor3ub(r, g, b );
+        glColor3ub(r, g, b * 0.8);
 
         glRectf(off_x + (i+0)*FFT_BIN_WIDTH, off_y + (k+0)*FFT_BIN_WIDTH,
                 off_x + (i+1)*FFT_BIN_WIDTH, off_y + (k+1)*FFT_BIN_WIDTH);
@@ -303,16 +303,24 @@ int draw_all(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glTranslatef(xpos, ypos, zpos);
+    // draw debug text
+    
+    glPushMatrix();
 
-    ftglSetFontFaceSize(font, 24, 24);
+    glTranslated(100, 100, 100);
+
+    ftglSetFontFaceSize(font, 18, 0);
 
     pthread_mutex_lock(&sample_mutex);
-    sprintf(text, "Unprocessed samples: %d", new_sample);
-    if (new_sample > 0)
-        ftglRenderFont(font, text, FTGL_RENDER_ALL);
+    sprintf(text, "Missed samples: %d", missed_samples);
+    ftglRenderFont(font, text, FTGL_RENDER_ALL);
     pthread_mutex_unlock(&sample_mutex);
 
+    glPopMatrix();
+
+    // offset the drawing
+
+    glTranslatef(xpos, ypos, zpos);
 
     // draw each bins mag, hist, hist_avg, hist_var
     for (i=0; i< FFT_NUM_BINS; i++)

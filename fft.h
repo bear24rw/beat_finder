@@ -13,6 +13,7 @@ extern double fft_input_avg;
 
 extern pthread_mutex_t sample_mutex;
 extern char new_sample;
+extern int missed_samples;
 
 int init_fft(void);
 int init_alsa(void);

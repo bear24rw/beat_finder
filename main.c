@@ -282,11 +282,11 @@ int main( int argc, char **argv )
     {
 
         // check to see if we have a new sample
-        if (new_sample)
+        if (new_sample == 1)
         {
             // we are going to process this sample, it is no longer new
             pthread_mutex_lock(&sample_mutex);
-            new_sample--;
+            new_sample = 0;
             pthread_mutex_unlock(&sample_mutex);
 
             do_fft();

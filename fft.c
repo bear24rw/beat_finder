@@ -34,6 +34,7 @@ uint16_t tmp_buffer[940];
 
 pthread_mutex_t sample_mutex = PTHREAD_MUTEX_INITIALIZER;
 char new_sample = 0;
+int missed_samples = 0;
 
 int init_fft(void)
 {
@@ -205,6 +206,8 @@ void get_alsa(void)
     }
     else if (rc == (int)frames)
     {
+        pthread_mutex_lock(&sample_mutex);
+
         // shift old buffer over to make room for new stuff
         for (i = 0; i < SAMPLE_SIZE - rc; i++)
             fft_input[i] = fft_input[i+rc];
@@ -216,11 +219,16 @@ void get_alsa(void)
             int right = (buffer[frame*4+2] << 8) | buffer[frame*4+3];
 
             fft_input[frame+(SAMPLE_SIZE-rc)] = (double)(left + right) / 1;
-
-            pthread_mutex_lock(&sample_mutex);
-            new_sample++;
-            pthread_mutex_unlock(&sample_mutex);
         }
+       
+        // if new_sample is still set it probably means we haven't processed it
+        if (new_sample) missed_samples++;
+        else if (new_sample == 0) missed_samples = 0;
+
+        // we have a new sample
+        new_sample = 1;
+
+        pthread_mutex_unlock(&sample_mutex);
     }
 }
 
