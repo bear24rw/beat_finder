@@ -328,21 +328,21 @@ int draw_all(void)
         draw_mag_hist(i, 0, 0);
     }
 
-    /*
+    
     // draw average var line
     glBegin(GL_LINES);
     glColor3ub(255, 255, 0);
-    glVertex2f(0                , HIST_SIZE*FFT_BIN_WIDTH + fft_global_hist_std_avg);
-    glVertex2f(FFT_NUM_BINS*FFT_BIN_WIDTH    , HIST_SIZE*FFT_BIN_WIDTH + fft_global_hist_std_avg);
+    glVertex2f(0                             , HIST_SIZE*FFT_BIN_WIDTH + fft_global_mag_avg);
+    glVertex2f(FFT_NUM_BINS*FFT_BIN_WIDTH    , HIST_SIZE*FFT_BIN_WIDTH + fft_global_mag_avg);
     glEnd();
 
     // draw history average average line
     glBegin(GL_LINES);
     glColor3ub(0, 255, 0);
-    glVertex2f(0                 , HIST_SIZE*FFT_BIN_WIDTH + fft_global_hist_avg);
-    glVertex2f(FFT_NUM_BINS*FFT_BIN_WIDTH    , HIST_SIZE*FFT_BIN_WIDTH + fft_global_hist_avg);
+    glVertex2f(0                            , HIST_SIZE*FFT_BIN_WIDTH + fft_global_hist_mag_avg);
+    glVertex2f(FFT_NUM_BINS*FFT_BIN_WIDTH   , HIST_SIZE*FFT_BIN_WIDTH + fft_global_hist_mag_avg);
     glEnd();
-    */
+   
 
     // draw mag clip
     if (USE_CLIP)
@@ -379,13 +379,7 @@ int draw_all(void)
         glVertex2f(i*SCREEN_WIDTH/SAMPLE_SIZE, 25 + fft_input[i] / 100 );
     }
     glEnd();
-/*
-    glBegin(GL_LINE_STRIP);
-    glColor3ub(100,100,100);
-    for (i=0; i < 900; i++)
-        glVertex2f(i*SCREEN_WIDTH/900, 200 + (float)tmp_buffer[i]/100);
-    glEnd();
-*/
+
 
     // draw test gradient
     /* 

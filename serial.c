@@ -38,7 +38,25 @@ int init_serial( void )
     return 0;
 }
 
-int send_serial( void )
+void send_serial_fpga( void )
+{
+   unsigned char data = 0;
+
+    if (lights[0].state) data += 1;
+    if (lights[1].state) data += 2;
+    if (lights[2].state) data += 4;
+    if (lights[3].state) data += 8;
+
+    if (lights[4].state) data += 16;
+    if (lights[5].state) data += 32;
+    if (lights[6].state) data += 64;
+    if (lights[7].state) data += 128;
+
+    ftdi_write_data(&ftdic, &data, 1);
+
+}
+
+void send_serial_table( void )
 {
     static int x, y = 0;
 
@@ -75,6 +93,4 @@ int send_serial( void )
 
     // send the flat array
     ftdi_write_data(&ftdic, flat_table, TABLE_WIDTH*TABLE_HEIGHT*3);
-
-    return 0;
 }

@@ -304,7 +304,7 @@ int main( int argc, char **argv )
                 draw_all();
             }
 
-            if ( use_serial ) send_serial();
+            if ( use_serial ) send_serial_fpga();
         }
 
         usleep(5000);
