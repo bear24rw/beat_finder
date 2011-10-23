@@ -59,6 +59,7 @@ extern double fft_global_hist_mag_max;  // max value of global history
 extern double fft_global_hist_std_avg;  // avg of all the std deviations
 extern double fft_global_hist_std_max;  // max of all the std deviations
 
+extern char new_data; // flag to signal that we have new data
 
 struct light
 {

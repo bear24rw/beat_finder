@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <math.h>
 #include <fftw3.h>
+#include <pthread.h>
 #include <alsa/asoundlib.h>
 
 #include "main.h"
@@ -25,6 +26,13 @@ int dir = 0;
 unsigned char *buffer; // 2 bytes / sample, 2 channels
 
 uint16_t tmp_buffer[940];
+
+// read in PCM 44100:16:1
+static int16_t buf[SAMPLE_SIZE];
+
+
+pthread_mutex_t sample_mutex = PTHREAD_MUTEX_INITIALIZER;
+char new_sample = 0;
 
 int init_fft(void)
 {
@@ -217,42 +225,48 @@ void get_alsa(void)
 
 }
 
-void get_samples_do_fft(void)
+void *get_samples(void)
 {
-
-    get_alsa();
-
-    // read in PCM 44100:16:1
-    static int16_t buf[SAMPLE_SIZE];
-
-    for (i = 0; i < SAMPLE_SIZE; i++) buf[i] = 0;
-
-    int data = fread(buf, sizeof(int16_t), SAMPLE_SIZE, fifo_file);
-
-    if (data != SAMPLE_SIZE)
+    while(1)
     {
-        printf("WRONG SAMPLE SIZE: %d!\n", data);
+        //get_alsa();
+        for (i = 0; i < SAMPLE_SIZE; i++) buf[i] = 0;
+
+        int data = fread(buf, sizeof(int16_t), SAMPLE_SIZE, fifo_file);
+
+        if (data != SAMPLE_SIZE)
+        {
+            printf("WRONG SAMPLE SIZE: %d!\n", data);
+        }
+        else
+        {
+            // cast the int16 array into a double array
+            for (i = 0; i < SAMPLE_SIZE; i++) fft_input[i] = (double)buf[i];
+
+            pthread_mutex_lock(&sample_mutex);
+            new_sample++;
+            pthread_mutex_unlock(&sample_mutex);
+        }
+
     }
-    else
-    {
-        // cast the int16 array into a double array
-        for (i = 0; i < SAMPLE_SIZE; i++) fft_input[i] = (double)buf[i];
+}
 
-        // execute the dft
-        fftw_execute(fft_plan);
+void do_fft(void)
+{
+    // execute the dft
+    fftw_execute(fft_plan);
 
-        copy_bins_to_old();
+    copy_bins_to_old();
 
-        compute_magnitude();
+    compute_magnitude();
 
-        compute_delta_from_last();
+    compute_delta_from_last();
 
-        add_bins_to_history();
+    add_bins_to_history();
 
-        compute_bin_hist();    
+    compute_bin_hist();    
 
-        compute_std_dev();
-    }
+    compute_std_dev();
 }
 
 // TODO: memcpy

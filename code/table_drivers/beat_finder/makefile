@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -O2 -lGL -lGLU -lm -lSDL_image -lfftw3 -lftdi -lasound `sdl-config --cflags --libs`
+CFLAGS = -g -Wall -O2 -lGL -lGLU -lm -lSDL_image -lfftw3 -lftdi -lasound -lpthread `sdl-config --cflags --libs`
 OBJECTS = main.o fft.o draw.o table.o serial.o
 
 main : $(OBJECTS)

@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <errno.h> 
+#include <pthread.h>
 
 #include "main.h"
 #include "fft.h"
@@ -25,8 +26,8 @@ char clipped = 0;            // 1 = we clipped a bin this loop
 
 // Mag: 0.170000 Var: 0.220000
 // default trigger levels for detecting beats
-double MAG_TRIGGER=    .70; //.36
-double VAR_TRIGGER=    .70; //.36
+double MAG_TRIGGER=    .82; //.36
+double VAR_TRIGGER=    .83; //.36
 
 struct bin fft_bin[FFT_NUM_BINS];
 
@@ -36,6 +37,8 @@ double fft_global_hist_mag_avg;     // average of all the bin history averages
 double fft_global_hist_mag_max;     // max value of global history
 double fft_global_hist_std_avg;     // avg of all the std deviations
 double fft_global_hist_std_max;     // max of all the std deviations
+
+char new_data = 0;
 
 struct light lights[NUM_LIGHTS];
 
@@ -271,23 +274,38 @@ int main( int argc, char **argv )
     init_lights();
     init_table();
 
+    pthread_t sample_thread;
+
+    pthread_create(&sample_thread, NULL, &get_samples, NULL);
+
     while ( !done )
     {
-        get_samples_do_fft();
 
-        detect_beats();
-
-        assign_lights();
-
-        assign_cells();
-
-        if ( use_gui )
+        // check to see if we have a new sample
+        if (new_sample)
         {
-            if (handle_sdl_events()) return 1;
-            draw_all();
-        }
+            // we are going to process this sample, it is no longer new
+            pthread_mutex_lock(&sample_mutex);
+            new_sample--;
+            if (new_sample > 0) printf("# Unprocessed samples: %d\n", new_sample);
+            pthread_mutex_unlock(&sample_mutex);
 
-        if ( use_serial ) send_serial();
+            do_fft();
+
+            detect_beats();
+
+            assign_lights();
+
+            assign_cells();
+
+            if ( use_gui )
+            {
+                if (handle_sdl_events()) return 1;
+                draw_all();
+            }
+
+            if ( use_serial ) send_serial();
+        }
 
         usleep(5000);
     }
