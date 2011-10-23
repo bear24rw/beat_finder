@@ -48,10 +48,6 @@ void init_gl(void)
 
     glDisable(GL_DEPTH_TEST);
 
-    glEnable(GL_LINE_SMOOTH);
-    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);    
-    glEnable(GL_BLEND);                            
-
     font = ftglCreatePixmapFont("/usr/share/fonts/corefonts/arial.ttf");
     if (!font)
     {
