@@ -332,6 +332,19 @@ int draw_all(void)
         draw_mag_hist(i, 0, 0);
     }
 
+    for (i=0; i < HIST_SIZE; i++)
+    {
+        double val = 0;
+
+        for (j=0; j < FFT_NUM_BINS; j++)
+        {
+            val += fft_bin[j].hist[i];
+            //val += fft_bin[j].hist_std;
+        }
+
+        glRectf(0, 0+ i*FFT_BIN_WIDTH,
+                0-(val/100), 0+ (i+1)*FFT_BIN_WIDTH);
+    }
     
     // draw average var line
     glBegin(GL_LINES);
