@@ -15,7 +15,8 @@ extern pthread_mutex_t sample_mutex;
 extern char new_sample;
 extern int missed_samples;
 
-int init_fft(void);
+int init_mpd(void);
+void init_fft(void);
 int init_alsa(void);
 void *get_samples();
 void do_fft(void);

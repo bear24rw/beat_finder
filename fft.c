@@ -36,17 +36,24 @@ pthread_mutex_t sample_mutex = PTHREAD_MUTEX_INITIALIZER;
 char new_sample = 0;
 int missed_samples = 0;
 
-int init_fft(void)
+int init_mpd(void)
+{
+    fifo_file = fopen(FIFO_FILE, "rb");
+
+    if (!fifo_file)
+    {
+        printf("Could not open mpd fifo file\n");
+        return 1;
+    }
+
+    return 0;
+}
+
+void init_fft(void)
 {
     fft_input = fftw_malloc(sizeof(double) * SAMPLE_SIZE);
     fft_out = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * FFT_SIZE);
     fft_plan = fftw_plan_dft_r2c_1d(SAMPLE_SIZE, fft_input, fft_out, FFTW_ESTIMATE);
-
-    fifo_file = fopen(FIFO_FILE, "rb");
-    if (!fifo_file)
-        return 1;
-
-    return 0;
 }
 
 void list_cards(void)

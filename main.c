@@ -260,7 +260,7 @@ int main( int argc, char **argv )
     }
 
     printf("init_fft()\n");
-    if ( init_fft() ) return 1;
+    init_fft();
 
     printf("init_alsa()\n");
     if ( init_alsa() ) return 1;
