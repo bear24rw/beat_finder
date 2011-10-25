@@ -340,7 +340,8 @@ void compute_magnitude(void)
     // we want to start lowering the clip magnitude
     if (! clipped) 
     {
-        clip_mag_raw -= pow(clip_mag_decay/100, 3);    // decrease the clip by x^3 since it has slow 'acceleration'
+       // clip_mag_raw -= pow(clip_mag_decay/100, 3);    // decrease the clip by x^3 since it has slow 'acceleration'
+        clip_mag_raw -= pow(clip_mag_decay/50, 3);    // decrease the clip by x^3 since it has slow 'acceleration'
         clip_mag_decay++;                            // increment the index 
     }
     else

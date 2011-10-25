@@ -20,7 +20,7 @@
 #define USE_CLIP_DYN    TRUE            // 1 = use dynamic clip, 0 = use static
 #define CLIP_STATIC_MAG 800             // static clip magnitude
 
-#define MAG_SCALE       1000//10000
+#define MAG_SCALE       4000//10000
 
 #define NUM_LIGHTS      (2*4)           // how many lights to display
 #define LIGHT_DECAY     (HIST_SIZE*2)   // cycles until light is clear to trigger again
