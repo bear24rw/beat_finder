@@ -10,6 +10,7 @@
 #include <FTGL/ftgl.h>
 
 #include "main.h"
+#include "audio.h"
 #include "fft.h"
 #include "draw.h"
 #include "table.h"
