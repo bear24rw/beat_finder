@@ -230,9 +230,7 @@ void get_mpd(void)
 
     for (int i = 0; i < SAMPLE_SIZE; i++) buf[i] = 0;
 
-    printf("about to read\n");
     int data = fread(buf, sizeof(int16_t), SAMPLE_SIZE, fifo_file);
-    printf("finished reading\n");
 
     if (data != SAMPLE_SIZE)
     {
