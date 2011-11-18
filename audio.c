@@ -228,9 +228,11 @@ void get_mpd(void)
 {
     static int16_t buf[SAMPLE_SIZE];
 
-    for (i = 0; i < SAMPLE_SIZE; i++) buf[i] = 0;
+    for (int i = 0; i < SAMPLE_SIZE; i++) buf[i] = 0;
 
+    printf("about to read\n");
     int data = fread(buf, sizeof(int16_t), SAMPLE_SIZE, fifo_file);
+    printf("finished reading\n");
 
     if (data != SAMPLE_SIZE)
     {
@@ -238,11 +240,18 @@ void get_mpd(void)
     }
     else
     {
-        // cast the int16 array into a double array
-        for (i = 0; i < SAMPLE_SIZE; i++) fft_input[i] = (double)buf[i];
-
         pthread_mutex_lock(&sample_mutex);
-        new_sample++;
+
+        // cast the int16 array into a double array
+        for (int i = 0; i < SAMPLE_SIZE; i++) fft_input[i] = (double)buf[i];
+        
+        // if new_sample is still set it probably means we haven't processed it
+        if (new_sample) missed_samples++;
+        else if (new_sample == 0) missed_samples = 0;
+
+        // we have a new sample
+        new_sample = 1;
+
         pthread_mutex_unlock(&sample_mutex);
     }
 }
@@ -251,9 +260,9 @@ void *get_samples(void)
 {
     while(1)
     {
-        get_alsa();
+        //get_alsa();
 
-        //get_mpd();
+        get_mpd();
 
         // find average of the input signal
         fft_input_avg = 0;

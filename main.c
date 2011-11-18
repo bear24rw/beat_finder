@@ -263,6 +263,9 @@ int main( int argc, char **argv )
     printf("init_fft()\n");
     init_fft();
 
+    printf("init_mpd()\n");
+    if ( init_mpd() ) return 1;
+
     printf("init_alsa()\n");
     if ( init_alsa() ) return 1;
 
