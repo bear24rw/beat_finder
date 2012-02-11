@@ -30,7 +30,7 @@
 #define SAMPLE_RATE     44100
 #define FFT_SIZE        (SAMPLE_SIZE / 2)
 #define MAX_FREQ        8000
-#define HIST_SIZE       120
+#define HIST_SIZE       12
 #define FREQ_PER_BIN    (SAMPLE_RATE / SAMPLE_SIZE)
 #define FFT_NUM_BINS    (MAX_FREQ/FREQ_PER_BIN)
 #define FFT_BIN_WIDTH   10              // pixel width of bin
