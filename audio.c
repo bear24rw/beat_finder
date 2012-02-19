@@ -144,7 +144,7 @@ int init_alsa(void)
     }
 
     // signed 16-bit little-endian format
-    rc = snd_pcm_hw_params_set_format(handle, params, SND_PCM_FORMAT_U16_BE);
+    rc = snd_pcm_hw_params_set_format(handle, params, SND_PCM_FORMAT_S16_LE);
     if (rc < 0)
     {
         printf("Unable to set format\n");
@@ -229,10 +229,10 @@ void get_alsa(void)
         int frame = 0;
         for (frame=0; frame<rc; frame++)
         {
-            int left = (buffer[frame*4+0] << 8) | buffer[frame*4+1];
-            int right = (buffer[frame*4+2] << 8) | buffer[frame*4+3];
+	    int left = *(int16_t *)&buffer[frame*4];
+	    int right = *(int16_t *)&buffer[frame*4+2];
 
-            fft_input[frame+(SAMPLE_SIZE-rc)] = (double)(left + right) / 1;
+            fft_input[frame+(SAMPLE_SIZE-rc)] = (double)(left + right) / 2;
         }
        
         // if new_sample is still set it probably means we haven't processed it
