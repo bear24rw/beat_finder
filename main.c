@@ -283,11 +283,14 @@ int main( int argc, char **argv )
     printf("init_fft()\n");
     init_fft();
 
+#ifdef USE_FIFO
     printf("init_mpd()\n");
     if ( init_mpd() ) return 1;
-
+#endif
+#ifdef USE_ALSA
     printf("init_alsa()\n");
     if ( init_alsa() ) return 1;
+#endif
 
     if ( use_serial )
     {

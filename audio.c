@@ -47,6 +47,7 @@ pthread_mutex_t sample_mutex = PTHREAD_MUTEX_INITIALIZER;
 char new_sample = 0;
 int missed_samples = 0;
 
+#ifdef USE_FIFO
 int init_mpd(void)
 {
     fifo_file = fopen(FIFO_FILE, "rb");
@@ -59,8 +60,9 @@ int init_mpd(void)
 
     return 0;
 }
+#endif
 
-
+#ifdef USE_ALSA
 void list_cards(void)
 {
     snd_ctl_card_info_t *p_info = NULL;
@@ -243,7 +245,9 @@ void get_alsa(void)
         pthread_mutex_unlock(&sample_mutex);
     }
 }
+#endif
 
+#ifdef USE_FIFO
 void get_mpd(void)
 {
     static int16_t buf[SAMPLE_SIZE];
@@ -273,14 +277,18 @@ void get_mpd(void)
         pthread_mutex_unlock(&sample_mutex);
     }
 }
+#endif
 
 void *get_samples(void)
 {
     while(1)
     {
-        //get_alsa();
-
+#ifdef USE_ALSA
+        get_alsa();
+#endif
+#ifdef USE_FIFO
         get_mpd();
+#endif
 
         // find average of the input signal
         fft_input_avg = 0;
