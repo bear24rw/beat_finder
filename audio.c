@@ -23,8 +23,9 @@
 #include <stdint.h>
 #include <math.h>
 #include <pthread.h>
+#ifdef USE_ALSA
 #include <alsa/asoundlib.h>
-
+#endif
 #include "main.h"
 #include "fft.h"
 #include "audio.h"
