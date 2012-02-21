@@ -23,18 +23,18 @@
 #include <stdint.h>
 #include <math.h>
 #include <pthread.h>
-#ifdef USE_ALSA
-#include <alsa/asoundlib.h>
-#endif
 #include "main.h"
 #include "fft.h"
 #include "audio.h"
 
 FILE *fifo_file;
 
+#ifdef USE_ALSA
+#include <alsa/asoundlib.h>
 snd_pcm_t *handle;
 snd_pcm_hw_params_t *params;
 snd_pcm_uframes_t frames = 1024;
+#endif
 
 int rc;
 int size;
