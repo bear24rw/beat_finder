@@ -28,6 +28,7 @@
 #include "fft.h"
 
 double *fft_input;
+double *fft_input_windowed;
 fftw_complex *fft_out;
 fftw_plan fft_plan;
 
@@ -36,12 +37,20 @@ double fft_input_avg = 0;
 void init_fft(void)
 {
     fft_input = fftw_malloc(sizeof(double) * SAMPLE_SIZE);
+    fft_input_windowed = fftw_malloc(sizeof(double) * SAMPLE_SIZE);
     fft_out = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * FFT_SIZE);
-    fft_plan = fftw_plan_dft_r2c_1d(SAMPLE_SIZE, fft_input, fft_out, FFTW_ESTIMATE);
+    fft_plan = fftw_plan_dft_r2c_1d(SAMPLE_SIZE, fft_input_windowed, fft_out, FFTW_ESTIMATE);
 }
 
 void do_fft(void)
 {
+
+    // hanning window
+    for (int i = 0; i < SAMPLE_SIZE; i++)
+    {
+        fft_input_windowed[i] = fft_input[i] * 0.5 * (1 - cos(2*M_PI*i/(SAMPLE_SIZE-1)));
+    }
+
     // execute the dft
     fftw_execute(fft_plan);
 
