@@ -328,14 +328,23 @@ int draw_all(void)
     
     glPushMatrix();
 
-    glTranslated(100, 100, 100);
-
     ftglSetFontFaceSize(font, 18, 0);
 
+    int offset = 0;
+
+    glRasterPos2f(0, SCREEN_HEIGHT - (++offset)*20);
     pthread_mutex_lock(&sample_mutex);
     sprintf(text, "Missed samples: %d", missed_samples);
     ftglRenderFont(font, text, FTGL_RENDER_ALL);
     pthread_mutex_unlock(&sample_mutex);
+
+    glRasterPos2f(0, SCREEN_HEIGHT - (++offset)*20);
+    sprintf(text, "Mag Trigger: %f", MAG_TRIGGER);
+    ftglRenderFont(font, text, FTGL_RENDER_ALL);
+
+    glRasterPos2f(0, SCREEN_HEIGHT - (++offset)*20);
+    sprintf(text, "Var Trigger: %f", VAR_TRIGGER);
+    ftglRenderFont(font, text, FTGL_RENDER_ALL);
 
     glPopMatrix();
 
