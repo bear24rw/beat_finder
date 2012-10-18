@@ -1,0 +1,54 @@
+# This file is a general .ucf for Basys rev E board
+# To use it in a project:
+# - remove or comment the lines corresponding to unused pins
+# - rename the used signals according to the project
+
+
+# clock pin for Basys rev E Board                                                                                                                        
+ NET "clk"      LOC = "P54"; # Bank = 2,  Pin name = IO_L5N_2/D3/GCLK31, Sch name = CLK1
+                                                                                                                        
+
+                         
+#  Leds                                                                                                                        
+ NET "leds<0>"    LOC = "P15"; # Bank = 3, Pin name = IO_L4N_3/GCLK21      Sch name = LD0
+ NET "leds<1>"    LOC = "P14"; # Bank = 3, Pin name = IO_L4P_3/GCLK20      Sch name = LD1
+ NET "leds<2>"    LOC = "P8";  # Bank = 3, Pin name = IO_L3N_3,            Sch name = LD2
+ NET "leds<3>"    LOC = "P7";  # Bank = 3, Pin name = IO_L3P_3,            Sch name = LD3
+ NET "leds<4>"    LOC = "P5";  # Bank = 3, Pin name = IO_L2N_3/VREF_3,     Sch name = LD4
+ NET "leds<5>"    LOC = "P4";  # Bank = 3, Pin name = IO_L2P_3,            Sch name = LD5
+ NET "leds<6>"    LOC = "P3";  # Bank = 3, Pin name = IO_L1N_3,            Sch name = LD6
+ NET "leds<7>"    LOC = "P2";  # Bank = 3, Pin name = IO_L1P_3,            Sch name = LD7
+                                                                                                                        
+ # Switches                                                                                                                        
+ NET "sw<0>"     LOC = "P38"; # Bank = 2, Pin name = IP,                  Sch name = SW0
+ NET "sw<1>"     LOC = "P36"; # Bank = 3, Pin name = IP,                  Sch name = SW1
+ NET "sw<2>"     LOC = "P29"; # Bank = 3, Pin name = IO(3S100E)/IP(3S250E),Sch name = SW2
+ NET "sw<3>"     LOC = "P24"; # Bank = 3, Pin name = IP                   Sch name = SW3
+ NET "sw<4>"     LOC = "P18"; # Bank = 3, Pin name = IP,                  Sch name = SW4
+ NET "sw<5>"     LOC = "P12"; # Bank = 3, Pin name = IP/VREF_3,           Sch name = SW5
+ NET "sw<6>"     LOC = "P10"; # Bank = 3, Pin name = IO(3S100E)/IP(3S250E),Sch name = SW6
+ NET "sw<7>"     LOC = "P6";  # Bank = 3, Pin name = IP,                                  
+                                                                                                          
+# 6 pin connectors                                                                                                                        
+
+ NET "tx" LOC = "P82"; # Bank = 1, Pin name = IO_L3N_1/A11,            Sch name = JA-3
+ NET "rx" LOC = "P92"; # Bank = 1, Pin name = IO_L6N_1/A5/GCLK9,       Sch name = JA-4
+
+ NET "box_1<0>" LOC = "P87"; # Bank = 1, Pin name = IO_L5P_1/A8/GCLK6,       Sch name = JB-1
+ NET "box_1<1>" LOC = "P93"; # Bank = 1, Pin name = IO_L7P_1/A4/GCLK10,      Sch name = JB-2
+ NET "box_1<2>" LOC = "P88"; # Bank = 1, Pin name = IO_L5N_1/A7/GCLK7/TRDY1, Sch name = JB-3
+ NET "box_1<3>" LOC = "P94"; # Bank = 1, Pin name = IO_L7N_1/A3/GCLK11,      Sch name = JB-4
+
+ NET "box_2<0>" LOC = "P77"; # Bank = 1, Pin name = IO_L2N_1/A13,            Sch name = JC-1
+ NET "box_2<1>" LOC = "P86"; # Bank = 1, Pin name = IO_L4N_1/A9/GCLK5,       Sch name = JC-2
+ NET "box_2<2>" LOC = "P76"; # Bank = 1, Pin name = IO_L2P_1/A14,            Sch name = JC-3
+ NET "box_2<3>" LOC = "P85"; # Bank = 1, Pin name = IO_L4P_1/A10/GCLK4,      Sch name = JC-4
+
+ NET "box_3<0>" LOC = "P75"; # Bank = 1, Pin name = IO_L1N_1/A15,            Sch name = JD-1
+ NET "box_3<1>" LOC = "P59"; # Bank = 2, Pin name = IO_L7N_2/M0/GCLK3,       Sch name = JD-2
+ NET "box_3<2>" LOC = "P74"; # Bank = 1, Pin name = IO_L1P_1/A16,            Sch name = JD-3
+ NET "box_3<3>" LOC = "P58"; # Bank = 2, Pin name = IO_L7P_2/M1/GCLK2,       Sch name = JD-4
+
+
+# Buttons                                                                                                                        
+ NET "button"    LOC = "P69"; # Bank = 2, Pin name = IP,                   Sch name = BTN0
